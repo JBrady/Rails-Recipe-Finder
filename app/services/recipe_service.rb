@@ -5,7 +5,6 @@ class RecipeService
 
     BASE_URL = 'https://api.spoonacular.com/recipes'
     API_KEY = ENV['SPOONACULAR_API_KEY']
-    # API_KEY = ENV['4ca1041afa1447bcabd9feb340c82f5c']
 
     def self.search(query)
         # send the request to the API
