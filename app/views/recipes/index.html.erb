@@ -1,0 +1,16 @@
+<div class="recipes">
+  <%= form_with url: recipes_path, method: :get do |form| %>
+    <%= form.text_field :query, placeholder: "Enter a recipe" %>
+    <%= form.submit "Search" %>
+  <% end %>
+  <% if @recipes.present? %>
+    <% @recipes.each do |recipe| %>
+      <div class="recipe-card">
+      <h2><%= link_to recipe["title"], recipe_path(recipe["id"]) %></h2>
+        <img src="<%= recipe["image"] %>" alt="<%= recipe["title"] %>">
+      </div>
+    <% end %>
+  <% else %>
+    <p>No recipes found.</p>
+  <% end %>
+</div>
