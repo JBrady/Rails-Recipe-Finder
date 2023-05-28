@@ -2,20 +2,31 @@ require 'httparty'
 
 class RecipeService
     include HTTParty
-
-    BASE_URL = 'https://api.spoonacular.com/recipes'
-    API_KEY = ENV['SPOONACULAR_API_KEY']
-
+    
+    base_uri 'https://api.spoonacular.com/recipes'
+    API_KEY = Rails.application.credentials.dig(:spoonacular, :api_key)
+  
+    format :json
+  
     def self.search(query)
-        # send the request to the API
-        response = HTTParty.get("#{BASE_URL}/complexSearch?query=#{query}&apiKey=#{API_KEY}")
-
-        # if the request was successful, parse the response body and return the recipes
-        if response.success?
+        Rails.cache.fetch("recipes/#{query}", expires_in: 12.hours) do
+          response = get("/complexSearch", query: { query: query, apiKey: API_KEY})
+          if response.success?
             response.parsed_response["results"]
-        else
-            # if the request failed, raise an error
+          else
             raise HTTParty::ResponseError, "API request failed with code #{response.code}: #{response.message}"
+          end
+        end
+    end
+
+    def self.fetch_recipe(id)
+        Rails.cache.fetch("recipe/#{id}", expires_in: 12.hours) do
+          response = get("/#{id}/information", query: { apiKey: API_KEY })
+          if response.success?
+            JSON.parse(response.body)
+          else
+            raise HTTParty::ResponseError, "API request failed with code #{response.code}: #{response.message}"
+          end
         end
     end
 end

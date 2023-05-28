@@ -1,0 +1,7 @@
+<% if @recipe %>
+  <h1><%= @recipe["title"] || "No title available" %></h1>
+  <img src="<%= @recipe["image"] || "default-image.jpg" %>" alt="<%= @recipe["title"] || "No title available" %>">
+  <p>Instructions: <%= raw @recipe["instructions"] || "No instructions available" %></p>
+<% else %>
+  <p>No recipe found.</p>
+<% end %>
